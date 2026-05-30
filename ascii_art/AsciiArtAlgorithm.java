@@ -14,8 +14,13 @@ public class AsciiArtAlgorithm {
      * @param resolution the number of ASCII characters per row in the output.
      * @param subImgCharMatcher the matcher used to map brightness to characters.
      */
+    private final Image image;
+    private final int resolution;
+    private final SubImgCharMatcher subImgCharMatcher;
     public AsciiArtAlgorithm(Image image, int resolution, SubImgCharMatcher subImgCharMatcher) {
-        // TODO: implement
+        this.image = image;
+        this.resolution = resolution;
+        this.subImgCharMatcher = subImgCharMatcher;
     }
 
     /**
@@ -23,7 +28,9 @@ public class AsciiArtAlgorithm {
      * @return a 2D char array representing the ASCII art image.
      */
     public char[][] run() {
-        // TODO: implement
+        Image padded = ImageProcessor.padImage(image);
+        Image[][] subImages = ImageProcessor.splitToSubImages(padded, resolution);
+        double brightness = ImageProcessor.calculateBrightness(subImages[row][col]);
         return null;
     }
 }
