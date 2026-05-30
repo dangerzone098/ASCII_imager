@@ -75,4 +75,8 @@ public class Image {
         return copy;
     }
 
+    private void changePixel(int r, int g, int b){
+        // TODO: implement
+    }
+
 }
