@@ -1,7 +1,8 @@
 package ascii_art;
 
 import image.Image;
-import image.ImagePad;
+import image.SubImage;
+import image.ImageProcessor;
 import image_char_matching.SubImgCharMatcher;
 
 /**
@@ -29,15 +30,15 @@ public class AsciiArtAlgorithm {
      * @return a 2D char array representing the ASCII art image.
      */
     public char[][] run() {
-        ImageProcessor imageProcessor = new ImageProcessor(image);
+        ImageProcessor imageProcessor = new ImageProcessor(image, resolution);
         Image padded = imageProcessor.getPaddedImage();
-        Image[][] subImages = imageProcessor.splitToSubImages(padded, resolution);
-
+        SubImage[][] subImages = imageProcessor.splitToSubImages(padded);
+        
         char[][] result = new char[subImages.length][subImages[0].length]; 
 
         for (int row = 0; row < subImages.length; row++) {
             for (int col = 0; col < subImages[row].length; col++) {
-                double brightness = ImageProcessor.calculateBrightness(subImages[row][col]);
+                double brightness = subImages[row][col].getBrightness();
                 result[row][col] = subImgCharMatcher.getCharByImageBrightness(brightness);
             }
         }
