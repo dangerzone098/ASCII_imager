@@ -28,7 +28,7 @@ public class AsciiArtAlgorithm {
      * @return a 2D char array representing the ASCII art image.
      */
     public char[][] run() {
-        Image padded = ImageProcessor.padImage(image);
+        Image padded = ImageProcessor.ImagePad(image);
         Image[][] subImages = ImageProcessor.splitToSubImages(padded, resolution);
         double brightness = ImageProcessor.calculateBrightness(subImages[row][col]);
         return null;
