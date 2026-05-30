@@ -75,9 +75,4 @@ public class Image {
         return copy;
     }
 
-    private void changePixel(int x, int y, int r, int g, int b){
-        // TODO: test
-        pixelArray[x][y] = new Color(r, g, b);
-    }
-
 }
