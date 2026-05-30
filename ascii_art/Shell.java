@@ -1,6 +1,7 @@
 package ascii_art;
 
 import image.Image;
+import image.ImageProcessor;
 
 import java.io.IOException;
 import java.util.TreeSet;
@@ -8,10 +9,7 @@ import java.util.TreeSet;
 import ascii_output.AsciiOutput;
 import ascii_output.ConsoleAsciiOutput;
 import image_char_matching.SubImgCharMatcher;
-import ascii_output.ConsoleAsciiOutput;
 import ascii_output.HtmlAsciiOutput;
-import java.io.IOException;
-import java.util.TreeSet;
 
 /**
  * Interactive command-line interface for the ASCII art application.
@@ -27,7 +25,6 @@ public class Shell {
 
 
     private int resolution;
-    private SubImgCharMatcher matcher;
     private AsciiOutput output;
     private boolean reverse;
     private TreeSet<Character> charset;
@@ -62,7 +59,7 @@ public class Shell {
         }
 
         while (true) {
-            System.out.print(">>> ");
+            System.out.print(PROMPT);
             String input = KeyboardInput.readLine();
             
             if (input.isEmpty()) {
@@ -190,7 +187,7 @@ public class Shell {
     }
 
     private void handleRes(String[] parts, Image image) {
-        ImageProcessor imageProcessor = new ImageProcessor(image);
+        ImageProcessor imageProcessor = new ImageProcessor(image, resolution);
         Image padded = imageProcessor.getPaddedImage();
 
         int minResolution = Math.max(1, padded.getWidth() / padded.getHeight());
