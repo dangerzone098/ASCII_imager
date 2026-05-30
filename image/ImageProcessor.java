@@ -2,8 +2,8 @@ package image;
 
 public class ImageProcessor {
 
-    private ImagePad imagePadder;
-    private ImageSplitter imageSplitter;
+    private final ImagePad imagePadder;
+    private final ImageSplitter imageSplitter;
     private Image image;
 
     public ImageProcessor(Image image, int resolution){
@@ -19,6 +19,6 @@ public class ImageProcessor {
     }
 
     public SubImage[][] splitToSubImages(Image image){
-        return ImageSplitter.split(image);
+        return imageSplitter.split(image);
     }
 }
