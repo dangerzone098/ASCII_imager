@@ -23,18 +23,29 @@ public class ImagePad {
     }
 
 
-    public void pad(){
-        // calculate dimensions difference
-        int heightDiff = paddedImage.getHeight() - image.getHeight();
-        int widthDiff = paddedImage.getWidth() - image.getWidth();
-        Color curr;
+    public void pad() {
+        // TODO: test
 
-        whiteRectangle(heightDiff / 2,
-                       widthDiff / 2,
-                    heightDiff / 2 + image.getHeight(),
-                    widthDiff / 2 + image.getWidth());
+        int startY = (paddedImage.getHeight() - image.getHeight()) / 2;
+        int startX = (paddedImage.getWidth() - image.getWidth()) / 2;
 
+        for (int i = 0; i < paddedImage.getHeight(); i++) {
+            for (int j = 0; j < paddedImage.getWidth(); j++) {
 
+                // Check if the curr (i, j) coordinate is inside the bounds of original image
+                boolean isInsideOriginalImageY = (i >= startY && i < startY + image.getHeight());
+                boolean isInsideOriginalImageX = (j >= startX && j < startX + image.getWidth());
+
+                if (isInsideOriginalImageY && isInsideOriginalImageX) {
+                    int originalY = i - startY;
+                    int originalX = j - startX;
+                    paddedImageArray[i][j] = image.getPixel(originalY, originalX);
+                } else {
+                    // make the padding cell white
+                    paddedImageArray[i][j] = new Color(255, 255, 255);
+                }
+            }
+        }
     }
 
     public Image getPaddedImage(){
@@ -50,7 +61,7 @@ public class ImagePad {
      * @param bottomX
      * @param bottomY
      */
-    private void whiteRectangle(int topX, int topY, int bottomX, int bottomY){
+    private void whiteRectangle(int topY, int topX, int bottomY, int bottomX){
         for (int i = topY; i <= bottomY; i++) {
             for (int j = topX; j <= bottomX; j++) {
                 paddedImageArray[i][j] = new Color(255, 255, 255); // makes it a white pixel
