@@ -32,7 +32,7 @@ public class AsciiArtAlgorithm {
         ImageProcessor imageProcessor = new ImageProcessor(image);
         Image padded = imageProcessor.getPaddedImage();
         Image[][] subImages = imageProcessor.splitToSubImages(padded, resolution);
-        
+
         char[][] result = new char[subImages.length][subImages[0].length]; 
 
         for (int row = 0; row < subImages.length; row++) {
