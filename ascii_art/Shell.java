@@ -268,6 +268,8 @@ public class Shell {
 
         AsciiArtAlgorithm algorithm =
                 new AsciiArtAlgorithm(image, resolution, subImgCharMatcher);
+                
+        algorithm.setReverse(reverse);
 
         char[][] result = algorithm.run();
         output.out(result);

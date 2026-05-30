@@ -19,6 +19,8 @@ public class AsciiArtAlgorithm {
     private final Image image;
     private final int resolution;
     private final SubImgCharMatcher subImgCharMatcher;
+    private boolean reverse;
+
     public AsciiArtAlgorithm(Image image, int resolution, SubImgCharMatcher subImgCharMatcher) {
         this.image = image;
         this.resolution = resolution;
@@ -39,10 +41,18 @@ public class AsciiArtAlgorithm {
         for (int row = 0; row < subImages.length; row++) {
             for (int col = 0; col < subImages[row].length; col++) {
                 double brightness = subImages[row][col].getBrightness();
+                if (reverse) {
+                    brightness = 1 - brightness;
+                }
                 result[row][col] = subImgCharMatcher.getCharByImageBrightness(brightness);
             }
         }
 
         return result;
     }
+
+    public void setReverse(boolean rev) {
+        reverse = rev;
+    }
+
 }
