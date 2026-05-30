@@ -2,14 +2,15 @@ package ascii_art;
 
 import image.Image;
 import image.ImageProcessor;
+import image.SubImage;
 
 import java.io.IOException;
 import java.util.TreeSet;
 
 import ascii_output.AsciiOutput;
 import ascii_output.ConsoleAsciiOutput;
-import image_char_matching.SubImgCharMatcher;
 import ascii_output.HtmlAsciiOutput;
+import image_char_matching.SubImgCharMatcher;
 
 /**
  * Interactive command-line interface for the ASCII art application.
@@ -23,26 +24,32 @@ public class Shell {
     private static final String DEFAULT_CHARS = "0123456789";
     private static final String PROMPT = ">>> ";
 
-
     private int resolution;
     private AsciiOutput output;
     private boolean reverse;
     private TreeSet<Character> charset;
     private SubImgCharMatcher subImgCharMatcher;
 
+    private ImageProcessor imageProcessor;
+    private Image paddedImage;
+    private SubImage[][] cachedSubImages;
+    private int cachedResolution;
+
     public Shell() {
         this.resolution = DEFAULT_RESOLUTION;
         this.reverse = false;
         this.output = new ConsoleAsciiOutput();
 
-
         this.charset = new TreeSet<>();
 
         for (char c : DEFAULT_CHARS.toCharArray()) {
-                charset.add(c);
+            charset.add(c);
         }
 
         this.subImgCharMatcher = new SubImgCharMatcher(toCharArray());
+
+        this.cachedSubImages = null;
+        this.cachedResolution = -1;
     }
 
     /**
@@ -58,10 +65,15 @@ public class Shell {
             return;
         }
 
+        this.imageProcessor = new ImageProcessor(image, resolution);
+        this.paddedImage = imageProcessor.getPaddedImage();
+        this.cachedSubImages = null;
+        this.cachedResolution = -1;
+
         while (true) {
             System.out.print(PROMPT);
             String input = KeyboardInput.readLine();
-            
+
             if (input.isEmpty()) {
                 System.out.println("Did not execute due to incorrect command.");
                 continue;
@@ -82,7 +94,7 @@ public class Shell {
                     handleRemove(parts);
                     break;
                 case "res":
-                    handleRes(parts, image);
+                    handleRes(parts);
                     break;
                 case "output":
                     handleOutput(parts);
@@ -97,7 +109,6 @@ public class Shell {
                     handleInvalidCommand();
             }
         }
-
     }
 
     /**
@@ -108,8 +119,6 @@ public class Shell {
         Shell shell = new Shell();
         shell.run(args[0]);
     }
-
-
 
     private void handleChars() {
         for (char c : charset) {
@@ -186,12 +195,9 @@ public class Shell {
         return c >= 32 && c <= 126;
     }
 
-    private void handleRes(String[] parts, Image image) {
-        ImageProcessor imageProcessor = new ImageProcessor(image, resolution);
-        Image padded = imageProcessor.getPaddedImage();
-
-        int minResolution = Math.max(1, padded.getWidth() / padded.getHeight());
-        int maxResolution = padded.getWidth();
+    private void handleRes(String[] parts) {
+        int minResolution = Math.max(1, paddedImage.getWidth() / paddedImage.getHeight());
+        int maxResolution = paddedImage.getWidth();
 
         if (parts.length == 1) {
             printResolution();
@@ -215,6 +221,8 @@ public class Shell {
         }
 
         resolution = newResolution;
+        cachedSubImages = null;
+        cachedResolution = -1;
         printResolution();
     }
 
@@ -231,7 +239,7 @@ public class Shell {
         if (parts[1].equals("console")) {
             output = new ConsoleAsciiOutput();
         } else if (parts[1].equals("html")) {
-            output = new HtmlAsciiOutput("out.html", "Courier New");
+            output = new HtmlAsciiOutput("html.out", "New Courier");
         } else {
             System.out.println("Did not change output method due to incorrect format.");
         }
@@ -257,20 +265,28 @@ public class Shell {
         return chars;
     }
 
+    private SubImage[][] getSubImages(Image image) {
+        if (cachedSubImages == null || cachedResolution != resolution) {
+            imageProcessor = new ImageProcessor(image, resolution);
+            paddedImage = imageProcessor.getPaddedImage();
+            cachedSubImages = imageProcessor.splitToSubImages(paddedImage);
+            cachedResolution = resolution;
+        }
+
+        return cachedSubImages;
+    }
+
     private void handleAsciiArt(Image image) {
         if (charset.size() < 2) {
             System.out.println("Did not execute. Charset is too small.");
             return;
         }
 
-        AsciiArtAlgorithm algorithm =
-                new AsciiArtAlgorithm(image, resolution, subImgCharMatcher);
-                
-        algorithm.setReverse(reverse);
+        SubImage[][] subImages = getSubImages(image);
+
+        AsciiArtAlgorithm algorithm = new AsciiArtAlgorithm(subImages, subImgCharMatcher, reverse);
 
         char[][] result = algorithm.run();
         output.out(result);
     }
-
-
 }
