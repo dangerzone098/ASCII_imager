@@ -35,41 +35,33 @@ adi.keezl,ptyair
 
 2. Data Structures Used:
 
-- TreeSet<Character> (in AsciiArtState): We used this to store the current charset.
+- TreeSet<Character> (in AsciiArtState), storing the current charset.
   TreeSet keeps the characters sorted by their ascii value so we
   get log(n) across the board.
   This makes the "chars" command just a basic iteration
 
-- for storing the char brightness table, we used a BST tree,
-  ordered based on brightness value as a tree
-  the tree will have key-value pairs:
-  - int key = brightness value
-  - char value = char itself
-
-  this way we get O(log(n)) insertion, removal and search.
-  which is a good balance between the three.
-  this is the data structured that was ussed to hold
-  the normalized values.
-
-
-- but we also needed to store the chars in a seperate
-  set that wasn't normalized for when we added or removed chars.
-  for that we used a basic map that stores the raw brightness
-  of every char we calculated so far.
+- For storing the char's brightness (in SubImgCharMatcher), we used two structures that work together:
+  1) BST tree, each node has a value - the char itself, and a key (used for the
+  ordering) - its brightness (normalized).
+  This way we get O(log(n)) insertion, removal and search, 
+  which is effiecnt like we wanted.
+  when we change the chars, it will make the tree "dirty" which means that the normalization needs to be calculated again as it depends on the whole charset. we update the normalization only when we need to output the results so that even if there are many changes to the charset before the output, it will only have to calculate again once, which is necessary.
+  2) Hashtable, which connects between the chars and their raw brightness.
+  we did this for when we added or removed chars.
   This way, if a user adds a character, removes it, and adds it back,
   we don't have to call convertToBoolArray() again.
-  It gives O(1) lookup time and satisfies requirement 1.5.2.
+  It gives O(1) lookup time.
+  
 
-- HashMap<String, ICommand> (in CommandFactory): map to link command strings
+- HashMap<String, ICommand> (in CommandFactory), map to link command strings
   to their actual command objects. It makes looking
   up commands in the Shell O(1)
 
-- SubImage[][] cache (cachedSubImages in AsciiArtState): We save the 2D array
-  of sub-images here. If the user runs the algorithm multiple
-  times without changing the resolution or the image,
+- SubImage[][] cache (cachedSubImages in AsciiArtState), saving the sub-images.
+  If the user runs the algorithm multiple times without changing the resolution or the image,
   we just reuse this cached array. This saves us from having
   to split the image and calculate the brightness of every block all
-  over again (efficiency requirement 1.5.1).
+  over again.
 
 3. Exception Handling:
 
