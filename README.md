@@ -46,7 +46,7 @@ adi.keezl,ptyair
   This way we get O(log(n)) insertion, removal and search, 
   which is effiecnt like we wanted.
   when we change the chars, it will make the tree "dirty" which means that the normalization needs to be calculated again as it depends on the whole charset. we update the normalization only when we need to output the results so that even if there are many changes to the charset before the output, it will only have to calculate again once, which is necessary.
-  2) Hashtable, which connects between the chars and their raw brightness.
+  2) HashMap, which connects between the chars and their raw brightness.
   we did this for when we added or removed chars.
   This way, if a user adds a character, removes it, and adds it back,
   we don't have to call convertToBoolArray() again.
@@ -58,10 +58,10 @@ adi.keezl,ptyair
   up commands in the Shell O(1)
 
 - SubImage[][] cache (cachedSubImages in AsciiArtState), saving the sub-images.
+  We keep this copy and not update it until needed, when an output is asked (and there were relevant changes - in the resolution).
   If the user runs the algorithm multiple times without changing the resolution or the image,
   we just reuse this cached array. This saves us from having
-  to split the image and calculate the brightness of every block all
-  over again.
+  to split the image and calculate the brightness of every block all over again.
 
 3. Exception Handling:
 
@@ -77,7 +77,7 @@ all inheriting from the standard Exception class:
 - UndersizedCharsetException
 
 Each exception is thrown with the exact error message requested in the instructions.
-For instance, if the user types something like "res up down",
+For example, if the user types something like "res big",
 ResCommand throws a ResolutionCommandException, and the Shell
 catches it and prints "Did not change resolution due to incorrect format."
 For completely invalid commands that don't match anything,
@@ -87,13 +87,13 @@ the Shell just prints the generic error directly.
 
 We didn't change the required public API at all.
 The constructor, getCharByImageBrightness, addChar,
-and removeChar are all exactly as specified.
+and removeChar are all in the API we got them.
 
-Under the hood, we added the HashMap and TreeMap mentioned
+We added the HashMap and TreeMap as we mentioned
 above to handle the caching requirements efficiently.
 We also added a private rebuildNormalizedTree() method that
 recalculates the normalized values and populates the TreeMap,
-but only when necessary.
+but only when necessary. (then tree is dirty - also described above)
 
 5. Changes to Supplied Code:
 
@@ -101,6 +101,6 @@ but only when necessary.
   which returns a copy of the pixelArray.
   We needed this so ImageSplitter could use System.arraycopy
   to split the image quickly, rather than having to call
-  getPixel() in a nested loop for every single pixel.
-  the rest of the original API is untouced.
+  getPixel() in a loop for every single pixel.
+  the rest of the original API is unchanged.
 
