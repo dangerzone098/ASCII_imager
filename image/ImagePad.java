@@ -6,7 +6,6 @@ import java.awt.*;
 public class ImagePad {
 
     private final Image image;
-    private final Image paddedImage;
     private final Color[][] paddedImageArray;
 
     public record Dimensions(int width, int height) {}
@@ -19,38 +18,32 @@ public class ImagePad {
         Dimensions newDimensions = getNewDimensions();
 
         this.paddedImageArray = new Color[newDimensions.height][newDimensions.width];
-        this.paddedImage = new Image(paddedImageArray, newDimensions.width, newDimensions.height);
     }
 
 
-    public void pad() {
-        // TODO: test
+        public Image pad() {
+        int startY = (paddedImageArray.length - image.getHeight()) / 2;
+        int startX = (paddedImageArray[0].length - image.getWidth()) / 2;
 
-        int startY = (paddedImage.getHeight() - image.getHeight()) / 2;
-        int startX = (paddedImage.getWidth() - image.getWidth()) / 2;
+        for (int i = 0; i < paddedImageArray.length; i++) {
+            for (int j = 0; j < paddedImageArray[i].length; j++) {
 
-        for (int i = 0; i < paddedImage.getHeight(); i++) {
-            for (int j = 0; j < paddedImage.getWidth(); j++) {
-
-                // Check if the curr (i, j) coordinate is inside the bounds of original image
-                boolean isInsideOriginalImageY = (i >= startY && i < startY + image.getHeight());
-                boolean isInsideOriginalImageX = (j >= startX && j < startX + image.getWidth());
+                boolean isInsideOriginalImageY = i >= startY && i < startY + image.getHeight();
+                boolean isInsideOriginalImageX = j >= startX && j < startX + image.getWidth();
 
                 if (isInsideOriginalImageY && isInsideOriginalImageX) {
                     int originalY = i - startY;
                     int originalX = j - startX;
                     paddedImageArray[i][j] = image.getPixel(originalY, originalX);
                 } else {
-                    // make the padding cell white
-                    paddedImageArray[i][j] = new Color(255, 255, 255);
+                    paddedImageArray[i][j] = Color.WHITE;
                 }
             }
         }
+
+        return new Image(paddedImageArray, paddedImageArray[0].length, paddedImageArray.length);
     }
 
-    public Image getPaddedImage(){
-        return paddedImage;
-    }
 
     /**
      * makes the cells white. the cells which are trapped by the triangle whose top left cell
