@@ -11,8 +11,7 @@ public class AsciiArtAlgorithm {
     private final SubImgCharMatcher subImgCharMatcher;
     private final boolean reverse;
 
-    public AsciiArtAlgorithm(SubImage[][] subImages,
-                            SubImgCharMatcher subImgCharMatcher, boolean reverse) {
+    public AsciiArtAlgorithm(SubImage[][] subImages, SubImgCharMatcher subImgCharMatcher, boolean reverse) {
         this.subImages = subImages;
         this.subImgCharMatcher = subImgCharMatcher;
         this.reverse = reverse;
@@ -29,8 +28,7 @@ public class AsciiArtAlgorithm {
                     brightness = 1 - brightness;
                 }
 
-                result[row][col] =
-                        subImgCharMatcher.getCharByImageBrightness(brightness);
+                result[row][col] = subImgCharMatcher.getCharByImageBrightness(brightness);
             }
         }
 
