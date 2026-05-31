@@ -4,7 +4,7 @@ public class ImageProcessor {
 
     private final ImagePad imagePadder;
     private final ImageSplitter imageSplitter;
-    private Image image;
+    private final Image image;
 
     public ImageProcessor(Image image, int resolution){
 
