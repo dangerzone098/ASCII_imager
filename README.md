@@ -1,4 +1,4 @@
-adi.keezl,ptyair
+adi.keezl, ptyair
 
 328097001, 215981465
 
@@ -35,41 +35,37 @@ adi.keezl,ptyair
 
 2. Data Structures Used:
 
-- TreeSet<Character> (in AsciiArtState): We used this to store the current charset.
+- TreeSet<Character> (in AsciiArtState), storing the current charset.
   TreeSet keeps the characters sorted by their ascii value so we
   get log(n) across the board.
   This makes the "chars" command just a basic iteration
 
-- for storing the char brightness table, we used a BST tree,
-  ordered based on brightness value as a tree
-  the tree will have key-value pairs:
-  - int key = brightness value
-  - char value = char itself
+- For storing the char's brightness (in SubImgCharMatcher), we used two structures that work together:
+  1) BST tree, each node has a value - the char itself, and a key (used for the
+  ordering) - its brightness (normalized).
+  This way we get O(log(n)) insertion, removal and search, 
+  which is effiecnt like we wanted.
+  when we change the chars, it will make the tree "dirty" which means that the normalization
+  needs to be calculated again as it depends on the whole charset. we update the normalization
+  only when we need to output the results so that even if there are many changes to the charset
+  before the output, it will only have to calculate again once, which is necessary.
 
-  this way we get O(log(n)) insertion, removal and search.
-  which is a good balance between the three.
-  this is the data structured that was ussed to hold
-  the normalized values.
-
-
-- but we also needed to store the chars in a seperate
-  set that wasn't normalized for when we added or removed chars.
-  for that we used a basic map that stores the raw brightness
-  of every char we calculated so far.
+  2) HashMap, which connects between the chars and their raw brightness.
+  we did this for when we added or removed chars.
   This way, if a user adds a character, removes it, and adds it back,
   we don't have to call convertToBoolArray() again.
-  It gives O(1) lookup time and satisfies requirement 1.5.2.
+  It gives O(1) lookup time.
+  
 
-- HashMap<String, ICommand> (in CommandFactory): map to link command strings
+- HashMap<String, ICommand> (in CommandFactory), map to link command strings
   to their actual command objects. It makes looking
   up commands in the Shell O(1)
 
-- SubImage[][] cache (cachedSubImages in AsciiArtState): We save the 2D array
-  of sub-images here. If the user runs the algorithm multiple
-  times without changing the resolution or the image,
+- SubImage[][] cache (cachedSubImages in AsciiArtState), saving the sub-images.
+  We keep this copy and not update it until needed, when an output is asked (and there were relevant changes - in the resolution).
+  If the user runs the algorithm multiple times without changing the resolution or the image,
   we just reuse this cached array. This saves us from having
-  to split the image and calculate the brightness of every block all
-  over again (efficiency requirement 1.5.1).
+  to split the image and calculate the brightness of every block all over again.
 
 3. Exception Handling:
 
@@ -85,7 +81,7 @@ all inheriting from the standard Exception class:
 - UndersizedCharsetException
 
 Each exception is thrown with the exact error message requested in the instructions.
-For instance, if the user types something like "res up down",
+For example, if the user types something like "res big",
 ResCommand throws a ResolutionCommandException, and the Shell
 catches it and prints "Did not change resolution due to incorrect format."
 For completely invalid commands that don't match anything,
@@ -95,13 +91,13 @@ the Shell just prints the generic error directly.
 
 We didn't change the required public API at all.
 The constructor, getCharByImageBrightness, addChar,
-and removeChar are all exactly as specified.
+and removeChar are all in the API we got them.
 
-Under the hood, we added the HashMap and TreeMap mentioned
+We added the HashMap and TreeMap as we mentioned
 above to handle the caching requirements efficiently.
 We also added a private rebuildNormalizedTree() method that
 recalculates the normalized values and populates the TreeMap,
-but only when necessary.
+but only when necessary. (then tree is dirty - also described above)
 
 5. Changes to Supplied Code:
 
@@ -109,6 +105,6 @@ but only when necessary.
   which returns a copy of the pixelArray.
   We needed this so ImageSplitter could use System.arraycopy
   to split the image quickly, rather than having to call
-  getPixel() in a nested loop for every single pixel.
-  the rest of the original API is untouced.
+  getPixel() in a loop for every single pixel.
+  the rest of the original API is unchanged.
 
