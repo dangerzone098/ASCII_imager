@@ -1,4 +1,4 @@
-adi.keezl,ptyair
+adi.keezl, ptyair
 
 328097001, 215981465
 
@@ -45,7 +45,11 @@ adi.keezl,ptyair
   ordering) - its brightness (normalized).
   This way we get O(log(n)) insertion, removal and search, 
   which is effiecnt like we wanted.
-  when we change the chars, it will make the tree "dirty" which means that the normalization needs to be calculated again as it depends on the whole charset. we update the normalization only when we need to output the results so that even if there are many changes to the charset before the output, it will only have to calculate again once, which is necessary.
+  when we change the chars, it will make the tree "dirty" which means that the normalization
+  needs to be calculated again as it depends on the whole charset. we update the normalization
+  only when we need to output the results so that even if there are many changes to the charset
+  before the output, it will only have to calculate again once, which is necessary.
+
   2) HashMap, which connects between the chars and their raw brightness.
   we did this for when we added or removed chars.
   This way, if a user adds a character, removes it, and adds it back,
