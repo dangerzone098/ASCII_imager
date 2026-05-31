@@ -1,26 +1,29 @@
 package image_char_matching;
-import com.sun.source.tree.Tree;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+
 /**
  * Matches an ASCII character to a sub-image based on brightness.
  */
 public class SubImgCharMatcher {
-
-    TreeMap<Double, Character> charMaxTree = new TreeMap<>();
-    boolean treeNormalized = false;
+    private final Map<Character, Double> rawBrightnessByChar;
+    private final TreeMap<Double, Character> normalizedBrightnessToChar;
+    private boolean normalizedTreeDirty;
 
     /**
      * Constructs a SubImgCharMatcher with the given character set.
      * @param charset the characters to use for matching.
      */
     public SubImgCharMatcher(char[] charset) {
-        // TODO: test
+        this.rawBrightnessByChar = new HashMap<>();
+        this.normalizedBrightnessToChar = new TreeMap<>();
+        this.normalizedTreeDirty = true;
+
         for (char c : charset) {
             addChar(c);
         }
-
     }
 
     /**
@@ -29,29 +32,29 @@ public class SubImgCharMatcher {
      * @return the best-matching character.
      */
     public char getCharByImageBrightness(double brightness) {
-        // TODO: test
-        // normalize the tree for proper output
-        if (!treeNormalized){
-            NormalizeTree();
-            treeNormalized = true;
-        }
-        // because we use a BST, the search for closest value doesn't
-        // allow for direct closest key, but rather the closest
-        // key which is larger, and closest which is smaller
-        // therefore we take both and check which one is closer
-        // to our desired value
-        double closestFloor = charMaxTree.floorKey(brightness);
-        double closestCeiling = charMaxTree.ceilingKey(brightness);
-        double floorDistance = Math.abs(closestFloor - brightness);
-        double ceilingDistance = Math.abs(closestCeiling - brightness);
-
-        if (floorDistance < ceilingDistance){
-            return charMaxTree.get(closestFloor);
-        }
-        else{
-            return charMaxTree.get(closestCeiling);
+        if (normalizedTreeDirty) {
+            rebuildNormalizedTree();
         }
 
+        Double floorKey = normalizedBrightnessToChar.floorKey(brightness);
+        Double ceilingKey = normalizedBrightnessToChar.ceilingKey(brightness);
+
+        if (floorKey == null) {
+            return normalizedBrightnessToChar.get(ceilingKey);
+        }
+
+        if (ceilingKey == null) {
+            return normalizedBrightnessToChar.get(floorKey);
+        }
+
+        double floorDistance = Math.abs(floorKey - brightness);
+        double ceilingDistance = Math.abs(ceilingKey - brightness);
+
+        if (floorDistance <= ceilingDistance) {
+            return normalizedBrightnessToChar.get(floorKey);
+        }
+
+        return normalizedBrightnessToChar.get(ceilingKey);
     }
 
     /**
@@ -59,20 +62,12 @@ public class SubImgCharMatcher {
      * @param c the character to add.
      */
     public void addChar(char c) {
-        // TODO: test
-        double inputCharBrightness = charBrightnessCalculator(c);
+        if (rawBrightnessByChar.containsKey(c)) {
+            return;
+        }
 
-        // we check if there exists a char in the tree with the exact same brightness
-        // if so, we choose to keep the one with the higher ASCII value
-        if (charMaxTree.containsKey(inputCharBrightness)) {
-            if (charMaxTree.get(inputCharBrightness) < c){
-                // insert the new node
-                charMaxTree.put(inputCharBrightness, c);
-            }
-        }
-        else{
-            charMaxTree.put(inputCharBrightness, c);
-        }
+        rawBrightnessByChar.put(c, charBrightnessCalculator(c));
+        normalizedTreeDirty = true;
     }
 
     /**
@@ -80,67 +75,59 @@ public class SubImgCharMatcher {
      * @param c the character to remove.
      */
     public void removeChar(char c) {
-        // TODO: test
-        double inputCharBrightness = charBrightnessCalculator(c);
-        // remove given node
-        charMaxTree.remove(inputCharBrightness);
+        rawBrightnessByChar.remove(c);
+        normalizedTreeDirty = true;
     }
 
+    private void rebuildNormalizedTree() {
+        normalizedBrightnessToChar.clear();
 
-    private void NormalizeTree(){
-        int treeSize = charMaxTree.size();
-        double[] brightArray = new double[treeSize];
-        char[] chars = new char[treeSize];
-        int i = 0;
-        // get all nodes and insert in arrays
-        for (Map.Entry<Double, Character> entry : charMaxTree.entrySet()) {
-            Double brightness = entry.getKey();
-            Character c = entry.getValue();
-            brightArray[i] = brightness;
-            chars[i] = c;
-            i++;
-        }
-        // normalize the array
-        NormalizeBrightnessArray(brightArray);
-        // remove all entries
-        charMaxTree.clear();
+        double minBrightness = Double.MAX_VALUE;
+        double maxBrightness = Double.MIN_VALUE;
 
-        // insert the normalized nodes back into the tree
-        for (int j = 0; j < treeSize; j++) {
-            charMaxTree.put(brightArray[j], chars[j]);
+        for (double brightness : rawBrightnessByChar.values()) {
+            minBrightness = Math.min(minBrightness, brightness);
+            maxBrightness = Math.max(maxBrightness, brightness);
         }
+
+        for (Map.Entry<Character, Double> entry : rawBrightnessByChar.entrySet()) {
+            char c = entry.getKey();
+            double rawBrightness = entry.getValue();
+            double normalizedBrightness =
+                    (rawBrightness - minBrightness) / (maxBrightness - minBrightness);
+
+            insertNormalizedChar(normalizedBrightness, c);
+        }
+
+        normalizedTreeDirty = false;
     }
 
-    private void NormalizeBrightnessArray(double[] brightnessArray){
-        // TODO: test
-        // get minimum and maximum brightness values in O(1)
-        // using the tree (which is sorted)
-        double maxBright = charMaxTree.lastKey();
-        double minBright = charMaxTree.firstKey();
+    private void insertNormalizedChar(double brightness, char c) {
+        if (!normalizedBrightnessToChar.containsKey(brightness)) {
+            normalizedBrightnessToChar.put(brightness, c);
+            return;
+        }
 
-        // we are allowed to assume maxBright != minBright so
-        // division by 0 is impossible
-        for (int i = 0; i < brightnessArray.length; i++) {
-            brightnessArray[i] = (brightnessArray[i] - minBright) / (maxBright - minBright);
+        char existingChar = normalizedBrightnessToChar.get(brightness);
+
+        if (c < existingChar) {
+            normalizedBrightnessToChar.put(brightness, c);
         }
     }
 
-    private double charBrightnessCalculator(char c){
-        // TODO: test
+    private double charBrightnessCalculator(char c) {
         boolean[][] boolArray = CharConverter.convertToBoolArray(c);
         int arraySize = boolArray.length;
-        double whiteCells = 0;
+        double trueCells = 0;
 
-        // find number of white cells (true cells)
-        for (boolean[] row : boolArray){
-            for (boolean cell: row){
-                if (cell){
-                    whiteCells++;
+        for (boolean[] row : boolArray) {
+            for (boolean cell : row) {
+                if (cell) {
+                    trueCells++;
                 }
             }
         }
-        // normalize the whiteCells value
-        whiteCells = whiteCells / (Math.pow(arraySize, 2));
-        return whiteCells;
+
+        return trueCells / Math.pow(arraySize, 2);
     }
 }
