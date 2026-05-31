@@ -13,7 +13,7 @@ which is a good balance between the three.
 
 
 
-UML:
+UML
 
 classDiagram
     %% Package: ascii_art
