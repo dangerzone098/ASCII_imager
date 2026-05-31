@@ -14,8 +14,7 @@ public class ImageProcessor {
     }
 
     public Image getPaddedImage(){
-        imagePadder.pad();
-        return imagePadder.getPaddedImage();
+        return imagePadder.pad();
     }
 
     public SubImage[][] splitToSubImages(Image image){
