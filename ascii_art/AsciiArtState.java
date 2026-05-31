@@ -1,5 +1,7 @@
 package ascii_art;
 
+import ascii_art.errors.ExceededBoundariesException;
+import ascii_art.errors.UndersizedCharsetException;
 import ascii_output.AsciiOutput;
 import ascii_output.ConsoleAsciiOutput;
 import ascii_output.HtmlAsciiOutput;
@@ -68,7 +70,7 @@ public class AsciiArtState {
         System.out.println("Resolution set to " + resolution + ".");
     }
 
-    public boolean changeResolution(String direction) {
+    public boolean changeResolution(String direction) throws ExceededBoundariesException {
         int newResolution;
 
         if (direction.equals("up")) {
@@ -83,7 +85,8 @@ public class AsciiArtState {
         int maxResolution = paddedImage.getWidth();
 
         if (newResolution < minResolution || newResolution > maxResolution) {
-            throw new IllegalArgumentException();
+            throw new ExceededBoundariesException
+                    ("Did not change resolution due to exceeding boundaries.");
         }
 
         resolution = newResolution;
@@ -105,10 +108,9 @@ public class AsciiArtState {
         reverse = !reverse;
     }
 
-    public void runAsciiArt() {
+    public void runAsciiArt() throws UndersizedCharsetException {
         if (charset.size() < 2) {
-            System.out.println("Did not execute. Charset is too small.");
-            return;
+            throw new UndersizedCharsetException("Did not execute. Charset is too small.");
         }
 
         SubImage[][] subImages = getSubImages();

@@ -1,6 +1,7 @@
 package ascii_art.commands;
 
 import ascii_art.AsciiArtState;
+import ascii_art.errors.OutputCommandFormatException;
 
 public class OutputCommand implements ICommand {
     private final AsciiArtState state;
@@ -10,10 +11,10 @@ public class OutputCommand implements ICommand {
     }
 
     @Override
-    public void execute(String[] parts) {
+    public void execute(String[] parts) throws OutputCommandFormatException {
         if (parts.length < 2) {
-            System.out.println("Did not change output method due to incorrect format.");
-            return;
+            throw new OutputCommandFormatException
+                    ("Did not change output method due to incorrect format.");
         }
 
         if (parts[1].equals("console")) {
@@ -21,7 +22,8 @@ public class OutputCommand implements ICommand {
         } else if (parts[1].equals("html")) {
             state.setHtmlOutput();
         } else {
-            System.out.println("Did not change output method due to incorrect format.");
+            throw new OutputCommandFormatException
+                    ("Did not change output method due to incorrect format.");
         }
     }
 }

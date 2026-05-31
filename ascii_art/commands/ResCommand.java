@@ -1,6 +1,8 @@
 package ascii_art.commands;
 
 import ascii_art.AsciiArtState;
+import ascii_art.errors.ResolutionCommandException;
+import ascii_art.errors.ExceededBoundariesException;
 
 public class ResCommand implements ICommand {
     private final AsciiArtState state;
@@ -10,21 +12,15 @@ public class ResCommand implements ICommand {
     }
 
     @Override
-    public void execute(String[] parts) {
+    public void execute(String[] parts) throws ResolutionCommandException, ExceededBoundariesException {
         if (parts.length == 1) {
             state.printResolution();
             return;
         }
 
-        try {
-            if (!state.changeResolution(parts[1])) {
-                System.out.println("Did not change resolution due to incorrect format.");
-                return;
-            }
-
-            state.printResolution();
-        } catch (IllegalArgumentException e) {
-            System.out.println("Did not change resolution due to exceeding boundaries.");
+        if (!state.changeResolution(parts[1])) {
+            throw new ResolutionCommandException("Did not change resolution due to incorrect format.");
         }
+        state.printResolution();
     }
 }

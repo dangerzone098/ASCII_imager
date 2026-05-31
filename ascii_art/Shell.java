@@ -2,6 +2,7 @@ package ascii_art;
 
 import ascii_art.commands.CommandFactory;
 import ascii_art.commands.ICommand;
+import ascii_art.errors.AddCommandException;
 import image.Image;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ public class Shell {
         try {
             image = new Image(imageName);
         } catch (IOException e) {
+            System.out.println(e.getMessage());
             return;
         }
 
@@ -47,8 +49,12 @@ public class Shell {
                 System.out.println("Did not execute due to incorrect command.");
                 continue;
             }
+            try{
+                command.execute(parts);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
 
-            command.execute(parts);
         }
     }
 

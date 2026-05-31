@@ -1,6 +1,7 @@
 package ascii_art.commands;
 
 import ascii_art.AsciiArtState;
+import ascii_art.errors.AddCommandException;
 
 public class AddCommand implements ICommand {
     private final AsciiArtState state;
@@ -10,9 +11,9 @@ public class AddCommand implements ICommand {
     }
 
     @Override
-    public void execute(String[] parts) {
+    public void execute(String[] parts) throws AddCommandException {
         if (parts.length < 2 || !state.addChars(parts[1])) {
-            System.out.println("Did not add due to incorrect format.");
+            throw new AddCommandException("Did not add due to incorrect format.");
         }
     }
 }

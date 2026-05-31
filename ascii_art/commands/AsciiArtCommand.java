@@ -1,6 +1,7 @@
 package ascii_art.commands;
 
 import ascii_art.AsciiArtState;
+import ascii_art.errors.UndersizedCharsetException;
 
 public class AsciiArtCommand implements ICommand {
     private final AsciiArtState state;
@@ -10,7 +11,7 @@ public class AsciiArtCommand implements ICommand {
     }
 
     @Override
-    public void execute(String[] parts) {
+    public void execute(String[] parts) throws UndersizedCharsetException {
         state.runAsciiArt();
     }
 }
