@@ -30,7 +30,6 @@ public class ImagePad {
 
                 boolean isInsideOriginalImageY = i >= startY && i < startY + image.getHeight();
                 boolean isInsideOriginalImageX = j >= startX && j < startX + image.getWidth();
-
                 if (isInsideOriginalImageY && isInsideOriginalImageX) {
                     int originalY = i - startY;
                     int originalX = j - startX;
@@ -44,23 +43,6 @@ public class ImagePad {
         return new Image(paddedImageArray, paddedImageArray[0].length, paddedImageArray.length);
     }
 
-
-    /**
-     * makes the cells white. the cells which are trapped by the triangle whose top left cell
-     * is (topX, topY) and bottom right cell is (bottomX, bottomY)
-     * IT IS INCLUSIVE
-     * @param topX
-     * @param topY
-     * @param bottomX
-     * @param bottomY
-     */
-    private void whiteRectangle(int topY, int topX, int bottomY, int bottomX){
-        for (int i = topY; i <= bottomY; i++) {
-            for (int j = topX; j <= bottomX; j++) {
-                paddedImageArray[i][j] = new Color(255, 255, 255); // makes it a white pixel
-            }
-        }
-    }
 
     private boolean isPowOf2(int num){
         return num > 0 && Integer.bitCount(num) == 1;

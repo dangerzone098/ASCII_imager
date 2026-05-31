@@ -5,7 +5,8 @@ import java.awt.*;
 public class ImageSplitter {
 
     // remember that resolution is number of subImages in a row
-    int resolution;
+    private int resolution;
+
     public record Dimensions(int subsPerRow, int subsPerColumn) {}
 
     public ImageSplitter(int resolution){
