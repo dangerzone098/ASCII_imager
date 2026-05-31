@@ -48,7 +48,7 @@ public class Image {
     }
 
     public Color[][] getPixelArray() {
-        return pixelArray;
+        return createPixelArrayCopy(pixelArray);
     }
 
     public void saveImage(String fileName){
