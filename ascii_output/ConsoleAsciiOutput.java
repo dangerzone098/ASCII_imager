@@ -5,13 +5,17 @@ package ascii_output;
  * @author Dan Nirel
  */
 public class ConsoleAsciiOutput implements AsciiOutput{
-    @Override
-    public void out(char[][] chars) {
-        for (char[] row : chars) {
-            for (char c : row) {
-                System.out.print(c + " ");
-            }
-            System.out.println();
-        }
-    }
+	@Override
+	/**
+	 * Executes out.
+	 * @param chars the chars
+	 */
+	public void out(char[][] chars) {
+		for (char[] row : chars) {
+			for (char c : row) {
+				System.out.print(c + " ");
+			}
+			System.out.println();
+		}
+	}
 }
