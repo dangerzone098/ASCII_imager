@@ -10,53 +10,67 @@ import java.util.logging.Logger;
  * @author Dan Nirel
  */
 public class HtmlAsciiOutput implements AsciiOutput {
-    private static final double BASE_LINE_SPACING = 0.8;
-    private static final double BASE_FONT_SIZE = 150.0;
+	private static final double BASE_LINE_SPACING = 0.8;
+	private static final double BASE_FONT_SIZE = 150.0;
 
-    private final String fontName;
-    private final String filename;
+	private final String fontName;
+	private final String filename;
 
-    public HtmlAsciiOutput(String filename, String fontName) {
-        this.fontName = fontName;
-        this.filename = filename;
-    }
+	/**
+	 * Constructs HtmlAsciiOutput.
+	 * @param filename the filename
+	 * @param fontName the fontName
+	 */
+	public HtmlAsciiOutput(String filename, String fontName) {
+		this.fontName = fontName;
+		this.filename = filename;
+	}
 
-    @Override
-    public void out(char[][] chars) {
-        try(BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
-            writer.write(String.format(
-                "<!DOCTYPE html>\n"+
-                "<html>\n"+
-                "<body style=\""+
-                    "\tCOLOR:#000000;"+
-                    "\tTEXT-ALIGN:center;"+
-                    "\tFONT-SIZE:1px;\">\n"+
-                "<p style=\""+
-                    "\twhite-space:pre;"+
-                    "\tFONT-FAMILY:%s;"+
-                    "\tFONT-SIZE:%frem;"+
-                    "\tLETTER-SPACING:0.15em;"+
-                    "\tLINE-HEIGHT:%fem;\">\n",
-                    fontName, BASE_FONT_SIZE/chars[0].length, BASE_LINE_SPACING));
+	@Override
+	/**
+	 * Executes out.
+	 * @param chars the chars
+	 */
+	public void out(char[][] chars) {
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+			writer.write(String.format(
+				"<!DOCTYPE html>\n"+
+				"<html>\n"+
+				"<body style=\""+
+					"\tCOLOR:#000000;"+
+					"\tTEXT-ALIGN:center;"+
+					"\tFONT-SIZE:1px;\">\n"+
+				"<p style=\""+
+					"\twhite-space:pre;"+
+					"\tFONT-FAMILY:%s;"+
+					"\tFONT-SIZE:%frem;"+
+					"\tLETTER-SPACING:0.15em;"+
+					"\tLINE-HEIGHT:%fem;\">\n",
+					fontName, BASE_FONT_SIZE/chars[0].length, BASE_LINE_SPACING));
 
-            for (char[] row : chars) {
-                for (char c : row) {
-                    String htmlRep = switch (c) {
-                        case '<' -> "&lt;";
-                        case '>' -> "&gt;";
-                        case '&' -> "&amp;";
-                        default -> String.valueOf(c);
-                    };
-                    writer.write(htmlRep);
-                }
-                writer.newLine();
-            }
-            writer.write(
-                "</p>\n"+
-                "</body>\n"+
-                "</html>\n");
-        } catch(IOException e) {
-            Logger.getGlobal().severe(String.format("Failed to write to \"%s\"", filename));
-        }
-    }
+			for (char[] row : chars) {
+				for (char c : row) {
+					String htmlRep = switch (c) {
+						case '<' -> "&lt;";
+						case '>' -> "&gt;";
+						case '&' -> "&amp;";
+						default -> String.valueOf(c);
+					};
+					writer.write(htmlRep);
+				}
+				writer.newLine();
+			}
+			writer.write(
+				"</p>\n"+
+				"</body>\n"+
+				"</html>\n");
+		/**
+		 * Executes catch.
+		 * @param e the e
+		 * @return the result
+		 */
+		} catch(IOException e) {
+			Logger.getGlobal().severe(String.format("Failed to write to \"%s\"", filename));
+		}
+	}
 }

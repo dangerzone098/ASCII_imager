@@ -3,14 +3,22 @@ package ascii_art.commands;
 import ascii_art.AsciiArtState;
 
 public class CharsCommand implements ICommand {
-    private final AsciiArtState state;
+	private final AsciiArtState state;
 
-    public CharsCommand(AsciiArtState state) {
-        this.state = state;
-    }
+	/**
+	 * Constructs CharsCommand.
+	 * @param state the state
+	 */
+	public CharsCommand(AsciiArtState state) {
+		this.state = state;
+	}
 
-    @Override
-    public void execute(String[] parts) {
-        state.printChars();
-    }
+	@Override
+	/**
+	 * Executes execute.
+	 * @param parts the parts
+	 */
+	public void execute(String[] parts) {
+		state.printChars();
+	}
 }

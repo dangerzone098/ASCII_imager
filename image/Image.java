@@ -12,71 +12,114 @@ import java.io.IOException;
  */
 public class Image {
 
-    private final Color[][] pixelArray;
-    private final int width;
-    private final int height;
+	private final Color[][] pixelArray;
+	private final int width;
+	private final int height;
 
-    public Image(String filename) throws IOException {
-        BufferedImage im = ImageIO.read(new File(filename));
-        width = im.getWidth();
-        height = im.getHeight();
+	/**
+	 * Constructs Image.
+	 * @param filename the filename
+	 * @throws IOException if an error occurs
+	 */
+	public Image(String filename) throws IOException {
+		BufferedImage im = ImageIO.read(new File(filename));
+		width = im.getWidth();
+		height = im.getHeight();
 
-        pixelArray = new Color[height][width];
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                pixelArray[i][j]=new Color(im.getRGB(j, i));
-            }
-        }
-    }
+		pixelArray = new Color[height][width];
+		for (int i = 0; i < height; i++) {
+			for (int j = 0; j < width; j++) {
+				pixelArray[i][j]=new Color(im.getRGB(j, i));
+			}
+		}
+	}
 
-    public Image(Color[][] pixelArray, int width, int height) {
-        this.pixelArray = createPixelArrayCopy(pixelArray);
-        this.width = width;
-        this.height = height;
-    }
+	/**
+	 * Constructs Image.
+	 * @param pixelArray the pixelArray
+	 * @param width the width
+	 * @param height the height
+	 */
+	public Image(Color[][] pixelArray, int width, int height) {
+		this.pixelArray = createPixelArrayCopy(pixelArray);
+		this.width = width;
+		this.height = height;
+	}
 
-    public int getWidth() {
-        return width;
-    }
+	/**
+	 * Gets width.
+	 * @return the result
+	 */
+	public int getWidth() {
+		return width;
+	}
 
-    public int getHeight() {
-        return height;
-    }
+	/**
+	 * Gets height.
+	 * @return the result
+	 */
+	public int getHeight() {
+		return height;
+	}
 
-    public Color getPixel(int row, int column) {
-        return pixelArray[row][column];
-    }
+	/**
+	 * Gets pixel.
+	 * @param row the row
+	 * @param column the column
+	 * @return the result
+	 */
+	public Color getPixel(int row, int column) {
+		return pixelArray[row][column];
+	}
 
-    public Color[][] getPixelArray() {
-        return createPixelArrayCopy(pixelArray);
-    }
+	/**
+	 * Gets pixelarray.
+	 * @return the result
+	 */
+	public Color[][] getPixelArray() {
+		return createPixelArrayCopy(pixelArray);
+	}
 
-    public void saveImage(String fileName){
-        // Initialize BufferedImage, assuming Color[][] is already properly populated.
-        BufferedImage bufferedImage = new BufferedImage(pixelArray[0].length, pixelArray.length,
-                BufferedImage.TYPE_INT_RGB);
-        // Set each pixel of the BufferedImage to the color from the Color[][].
-        for (int x = 0; x < pixelArray.length; x++) {
-            for (int y = 0; y < pixelArray[x].length; y++) {
-                bufferedImage.setRGB(y, x, pixelArray[x][y].getRGB());
-            }
-        }
-        File outputfile = new File(fileName+".jpeg");
-        try {
-            ImageIO.write(bufferedImage, "jpeg", outputfile);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	/**
+	 * Executes saveImage.
+	 * @param fileName the fileName
+	 */
+	public void saveImage(String fileName){
+		// Initialize BufferedImage, assuming Color[][] is already properly populated.
+		BufferedImage bufferedImage = new BufferedImage(pixelArray[0].length, pixelArray.length,
+				BufferedImage.TYPE_INT_RGB);
+		// Set each pixel of the BufferedImage to the color from the Color[][].
+		for (int x = 0; x < pixelArray.length; x++) {
+			for (int y = 0; y < pixelArray[x].length; y++) {
+				bufferedImage.setRGB(y, x, pixelArray[x][y].getRGB());
+			}
+		}
+		File outputfile = new File(fileName+".jpeg");
+		try {
+			ImageIO.write(bufferedImage, "jpeg", outputfile);
+		/**
+		 * Executes catch.
+		 * @param e the e
+		 * @return the result
+		 */
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    private Color[][] createPixelArrayCopy(Color[][] pixelArray) {
-        Color[][] copy = new Color[pixelArray.length][pixelArray[0].length];
-        for(int i=0; i<pixelArray.length; i++) {
-            for (int j=0; j<pixelArray[i].length; j++) {
-                copy[i][j] = pixelArray[i][j];
-            }
-        }
-        return copy;
-    }
+	/* 
+	 * Executes createPixelArrayCopy.
+	 * @param pixelArray the pixelArray
+	 * @return the result
+	 */
+	private Color[][] createPixelArrayCopy(Color[][] pixelArray) {
+		Color[][] copy = new Color[pixelArray.length][pixelArray[0].length];
+		for (int i = 0; i < pixelArray.length; i++) {
+			for (int j=0; j<pixelArray[i].length; j++) {
+				copy[i][j] = pixelArray[i][j];
+			}
+		}
+		return copy;
+	}
 
 }
