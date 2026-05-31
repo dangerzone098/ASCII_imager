@@ -4,6 +4,10 @@ import ascii_art.AsciiArtState;
 import ascii_art.errors.ResolutionCommandException;
 import ascii_art.errors.ExceededBoundariesException;
 
+/**
+ * Represents the ResCommand.
+ * @author username1, username2
+ */
 public class ResCommand implements ICommand {
 	private static final String INCORRECT_FORMAT_MSG = "Did not change resolution due to incorrect format.";
 	private static final String UP_ARG = "up";

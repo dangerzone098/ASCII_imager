@@ -3,6 +3,10 @@ package ascii_art.commands;
 import ascii_art.AsciiArtState;
 import ascii_art.errors.RemoveCommandException;
 
+/**
+ * Represents the RemoveCommand.
+ * @author username1, username2
+ */
 public class RemoveCommand implements ICommand {
 	private static final String INCORRECT_FORMAT_MSG = "Did not remove due to incorrect format.";
 	private final AsciiArtState state;

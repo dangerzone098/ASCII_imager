@@ -3,11 +3,20 @@ package image;
 import java.awt.*;
 
 
+/**
+ * Represents the ImagePad.
+ * @author username1, username2
+ */
 public class ImagePad {
 
 	private final Image image;
 	private final Color[][] paddedImageArray;
 
+	/**
+	 * dimension vector
+	 * @param width
+	 * @param height
+	 */
 	public record Dimensions(int width, int height) {}
 
 	/**

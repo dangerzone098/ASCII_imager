@@ -5,6 +5,10 @@ import java.util.Map;
 
 import ascii_art.AsciiArtState;
 
+/**
+ * Represents the CommandFactory.
+ * @author username1, username2
+ */
 public class CommandFactory {
 	private final Map<String, ICommand> commands;
 

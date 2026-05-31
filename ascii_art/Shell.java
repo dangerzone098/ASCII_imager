@@ -13,7 +13,10 @@ import java.io.IOException;
 public class Shell {
 	private static final String PROMPT = ">>> ";
 
-	public Shell() {}
+    /**
+     * default contructor
+     */
+    public Shell() {}
 
 	/**
 	 * Executes run.

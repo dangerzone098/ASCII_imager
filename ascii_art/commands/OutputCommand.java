@@ -3,8 +3,13 @@ package ascii_art.commands;
 import ascii_art.AsciiArtState;
 import ascii_art.errors.OutputCommandFormatException;
 
+/**
+ * Represents the OutputCommand.
+ * @author username1, username2
+ */
 public class OutputCommand implements ICommand {
-	private static final String INCORRECT_FORMAT_MSG = "Did not change output method due to incorrect format.";
+	private static final String INCORRECT_FORMAT_MSG =
+			"Did not change output method due to incorrect format.";
 	private static final String CONSOLE_ARG = "console";
 	private static final String HTML_ARG = "html";
 	private final AsciiArtState state;

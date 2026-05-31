@@ -2,6 +2,10 @@ package ascii_art.commands;
 
 import ascii_art.AsciiArtState;
 
+/**
+ * Represents the CharsCommand.
+ * @author username1, username2
+ */
 public class CharsCommand implements ICommand {
 	private final AsciiArtState state;
 

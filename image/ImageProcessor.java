@@ -1,5 +1,9 @@
 package image;
 
+/**
+ * Represents the ImageProcessor.
+ * @author username1, username2
+ */
 public class ImageProcessor {
 
 	private final ImagePad imagePadder;

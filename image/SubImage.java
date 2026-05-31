@@ -3,6 +3,10 @@ package image;
 import java.awt.*;
 import java.io.IOException;
 
+/**
+ * Represents the SubImage.
+ * @author username1, username2
+ */
 public class SubImage extends Image{
 
 	private static final double RED_WEIGHT = 0.2126;
@@ -51,7 +55,8 @@ public class SubImage extends Image{
 		for (int i = 0; i < getHeight(); i++) {
 			for (int j = 0; j < getWidth(); j++) {
 				color = getPixel(i, j);
-				grayPixel = color.getRed() * RED_WEIGHT + color.getGreen() * GREEN_WEIGHT + color.getBlue() * BLUE_WEIGHT;
+				grayPixel = color.getRed() * RED_WEIGHT + color.getGreen()
+                        * GREEN_WEIGHT + color.getBlue() * BLUE_WEIGHT;
 				graySum += grayPixel;
 			}
 		}

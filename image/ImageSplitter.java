@@ -2,11 +2,20 @@ package image;
 
 import java.awt.*;
 
+/**
+ * Represents the ImageSplitter.
+ * @author username1, username2
+ */
 public class ImageSplitter {
 
 	// remember that resolution is number of subImages in a row
 	private int resolution;
 
+    /**
+     * dimension vector
+     * @param subsPerRow
+     * @param subsPerColumn
+     */
 	public record Dimensions(int subsPerRow, int subsPerColumn) {}
 
 	/**

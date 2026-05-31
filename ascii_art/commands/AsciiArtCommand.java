@@ -3,6 +3,10 @@ package ascii_art.commands;
 import ascii_art.AsciiArtState;
 import ascii_art.errors.UndersizedCharsetException;
 
+/**
+ * Represents the AsciiArtCommand.
+ * @author username1, username2
+ */
 public class AsciiArtCommand implements ICommand {
 	private final AsciiArtState state;
 

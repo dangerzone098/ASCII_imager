@@ -2,6 +2,10 @@ package ascii_art;
 
 import java.util.Scanner;
 
+/**
+ * Represents the KeyboardInput.
+ * @author username1, username2
+ */
 class KeyboardInput {
 	private static ascii_art.KeyboardInput keyboardInputObject = null;
 	private Scanner scanner;

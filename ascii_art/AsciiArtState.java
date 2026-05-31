@@ -12,6 +12,10 @@ import image_char_matching.SubImgCharMatcher;
 
 import java.util.TreeSet;
 
+/**
+ * Represents the AsciiArtState.
+ * @author username1, username2
+ */
 public class AsciiArtState {
 	private static final int DEFAULT_RESOLUTION = 2;
 	private static final String DEFAULT_CHARS = "0123456789";

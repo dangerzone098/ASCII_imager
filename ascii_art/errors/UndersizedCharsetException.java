@@ -1,7 +1,14 @@
 package ascii_art.errors;
 
+/**
+ * Represents the UndersizedCharsetException.
+ * @author username1, username2
+ */
 public class UndersizedCharsetException extends Exception{
 
+	/**
+	 * default Contrcutor
+	 */
 	public UndersizedCharsetException(){super();}
 
 	/**
